@@ -21,6 +21,9 @@
                             <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                                 {{ __('Products') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.index')">
+                                {{ __('Orders') }}
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -45,6 +48,10 @@
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
+                            </x-dropdown-link>
+                            
+                            <x-dropdown-link :href="route('orders.my')">
+                                {{ __('My Orders') }}
                             </x-dropdown-link>
 
                             <form method="POST" action="{{ route('logout') }}">
