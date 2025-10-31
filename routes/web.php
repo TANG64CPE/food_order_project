@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -20,7 +22,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
+
+// ===== CART ROUTES =====
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update/{productId}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');
 
 // ===== ADMIN ROUTES =====
 // กลุ่มของ Route ทั้งหมดนี้ ต้อง (1) ล็อกอินก่อน และ (2) ต้องเป็น Admin

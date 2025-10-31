@@ -32,9 +32,13 @@
                             <div class="mt-4 flex justify-between items-center">
                                 <span class="text-xl font-bold text-gray-900">฿{{ number_format($product->price, 2) }}</span>
 
-                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Add to Cart
-                                </button>
+                                <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                                        Add to Cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
