@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // 1. เพิ่ม Auth
-use App\Models\Order;                 // 2. เพิ่ม Order
-use App\Models\OrderDetail;            // 3. เพิ่ม OrderDetail
-use Illuminate\Support\Facades\DB;      // 4. เพิ่ม DB (สำหรับ Transaction)
+use Illuminate\Support\Facades\Auth; 
+use App\Models\Order;              
+use App\Models\OrderDetail;           
+use Illuminate\Support\Facades\DB;      
 
 class CheckoutController extends Controller
 {
@@ -49,7 +49,7 @@ class CheckoutController extends Controller
         $cart = session()->get('cart', []);
         $user = Auth::user();
 
-        // 3. (ป้องกัน) ถ้าตะกร้าว่างเปล่า
+        // 3. ถ้าตะกร้าว่างเปล่า
         if (empty($cart)) {
             return redirect()->route('home')->with('error', 'Your cart is empty.');
         }
@@ -60,12 +60,12 @@ class CheckoutController extends Controller
             $totalAmount += $details['price'] * $details['quantity'];
         }
 
-        // 5. [สำคัญ] ใช้ DB Transaction
+        // 5.ใช้ DB Transaction
         // เพื่อป้องกันว่า ถ้าบันทึก OrderDetail พลาด Order หลักก็จะไม่ถูกสร้างด้วย
         DB::beginTransaction();
 
         try {
-            // 2. [สำคัญ] รวมที่อยู่ใหม่ให้เป็น string
+            // 2.รวมที่อยู่ใหม่ให้เป็น string
             $full_address = $validated['shipping_street_address'] . ', ' .
                             'ต.' . $validated['shipping_subdistrict'] . ', ' .
                             'อ.' . $validated['shipping_district'] . ', ' .

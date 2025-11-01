@@ -15,7 +15,7 @@ class Order extends Model
         'status',
         'shipping_address',
         'shipping_phone',
-        // (field อื่นๆ ของคุณที่เคยเพิ่มไว้)
+        
         'shipping_street_address',
         'shipping_subdistrict',
         'shipping_district',
@@ -28,7 +28,6 @@ class Order extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    // ในไฟล์ app/Models/Order.php
 
     public function orderDetails()
     {

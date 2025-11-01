@@ -25,7 +25,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        // ดึงหมวดหมู่ทั้งหมด เพื่อไปทำ Dropdown "หมวดหมู่แม่"
+        // ดึงหมวดหมู่ทั้งหมด เพื่อไปทำ Dropdown 
         $categories = ProductCategory::all();
         return view('admin.categories.create', compact('categories'));
     }
@@ -61,8 +61,8 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $category) // 1. เราใช้ Route Model Binding (มันหา $category ให้เราอัตโนมัติจาก ID)
     {
-        // ดึงหมวดหมู่ทั้งหมด (สำหรับ Dropdown หมวดแม่)
-        // ยกเว้น "ตัวเอง" (กันไม่ให้เลือกตัวเองเป็นแม่)
+        // ดึงหมวดหมู่ทั้งหมด 
+        // ยกเว้น "ตัวเอง" 
         $categories = ProductCategory::where('id', '!=', $category->id)->get();
 
         return view('admin.categories.edit', compact('category', 'categories'));

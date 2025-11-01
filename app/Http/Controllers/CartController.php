@@ -12,8 +12,6 @@ class CartController extends Controller
      */
     public function index()
     {
-        // View 'cart.blade.php' จะดึงข้อมูลจาก session() โดยตรง
-        // เราแค่ return view ก็พอ
         return view('cart');
     }
 
@@ -22,7 +20,6 @@ class CartController extends Controller
      */
     public function add(Request $request, Product $product)
     {
-        // (โค้ดเดิมจากครั้งที่แล้ว)
         $cart = session()->get('cart', []);
 
         if (isset($cart[$product->id])) {

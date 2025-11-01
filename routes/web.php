@@ -56,7 +56,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     // 2. Route สำหรับ "อัปเดตสถานะ" ออเดอร์
-    Route::put('/admin/orders/{order}', [OrderController::class, 'update'])->name('admin.orders.update');
+    Route::patch('/admin/orders/{order}', [OrderController::class, 'update'])->name('admin.orders.update');
     Route::resource('/admin/categories', ProductCategoryController::class);
     Route::resource('/admin/products', ProductController::class);
     

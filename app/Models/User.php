@@ -23,7 +23,6 @@ class User extends Authenticatable
         'phone',
         'email',
         'password',
-        // 'is_admin' เราไม่ควรใส่ในนี้ เพื่อความปลอดภัย
     ];
 
     /**

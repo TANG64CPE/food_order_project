@@ -37,7 +37,6 @@ class OrderController extends Controller
     
     /**
      * อัปเดตสถานะออเดอร์
-     * (เมธอดนี้ของคุณดีอยู่แล้ว - ไม่ต้องแก้ไข)
      */
     public function update(Request $request, Order $order)
     {

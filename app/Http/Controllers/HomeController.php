@@ -14,18 +14,17 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        // 1. ดึง Categories ทั้งหมดมา (ใช้ Model 'ProductCategory' ตามโค้ดเดิมของคุณ)
+        // 1. ดึง Categories ทั้งหมดมา 
         $categories = ProductCategory::all(); 
         
-        // 2. เริ่มสร้าง Query (เพิ่ม latest() และ with() จากโค้ดเดิมของคุณ)
+        // 2. เริ่มสร้าง Query 
         $productQuery = Product::with('productCategory')->latest(); 
 
         // 3. ตรวจสอบว่ามี query string 'category' ใน URL หรือไม่
         if ($request->has('category')) {
             $categoryName = $request->query('category');
             
-            // 4. ใช้ whereHas กับ relationship 'productCategory' (ตามโค้ดเดิมของคุณ)
-            //    (หมายเหตุ: ใน Model Product.php ต้องมีฟังก์ชันชื่อ 'productCategory')
+            // 4. ใช้ whereHas กับ relationship 'productCategory' 
             $productQuery->whereHas('productCategory', function ($query) use ($categoryName) {
                 $query->where('name', $categoryName);
             });
@@ -34,7 +33,7 @@ class HomeController extends Controller
         // 5. สั่งให้ Query ทำงาน
         $products = $productQuery->get();
 
-        // 6. ส่ง $products (ที่กรองแล้ว) และ $categories (สำหรับปุ่ม) ไปที่ View
+        // 6. ส่ง $products และ $categories  ไปที่ View
         return view('home', [
             'products' => $products,
             'categories' => $categories

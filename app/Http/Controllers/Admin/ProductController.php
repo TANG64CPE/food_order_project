@@ -44,7 +44,7 @@ class ProductController extends Controller
             'stock_qty' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'product_number' => 'nullable|string|unique:products,product_number',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // กฎสำหรับไฟล์รูป
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
 
         // 4b. จัดการการอัปโหลดไฟล์รูปภาพ
@@ -75,7 +75,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product) // 1. ใช้ Route Model Binding (หา Product ให้เลย)
+    public function edit(Product $product) // 1. หา Product ให้เลย
     {
         // ดึงหมวดหมู่ทั้งหมดสำหรับ Dropdown
         $categories = ProductCategory::all();
@@ -97,13 +97,13 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             // ตรวจ unique โดย "ยกเว้น" ID ของตัวเอง
             'product_number' => 'nullable|string|unique:products,product_number,' . $product->id, 
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // รูปใหม่ (ถ้ามี)
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // 2. จัดการอัปโหลด "รูปใหม่" (ถ้ามีการส่งมา)
+        // 2. จัดการอัปโหลด "รูปใหม่" 
         if ($request->hasFile('image_url')) {
 
-            // 2a. (แนะนำ) ลบรูปเก่าทิ้งก่อน
+            // 2a. ลบรูปเก่าทิ้งก่อน
             if ($product->image_url) {
                 Storage::disk('public')->delete($product->image_url);
             }
@@ -113,7 +113,7 @@ class ProductController extends Controller
             $validatedData['image_url'] = $path;
         }
 
-        // 3. อัปเดตข้อมูล (ข้อมูลเก่า + รูปใหม่ถ้ามี)
+        // 3. อัปเดตข้อมูล 
         $product->update($validatedData);
 
         // 4. กลับไปหน้า index
@@ -125,7 +125,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // 1. (สำคัญ) ลบไฟล์รูปภาพออกจาก Storage ก่อน
+        // 1. ลบไฟล์รูปภาพออกจาก Storage ก่อน
         if ($product->image_url) {
             Storage::disk('public')->delete($product->image_url);
         }
