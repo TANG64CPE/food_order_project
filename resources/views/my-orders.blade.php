@@ -37,22 +37,50 @@
                                             @endif
                                             <div>
                                                 <p class="font-medium">{{ $item->product->name }}</p>
-                                                <p class="text-sm text-gray-600">Qty: {{ $item->order_qty }} x ฿{{ number_format($item->unit_price, 2) }}</p>
+                                                {{-- (หมายเหตุ: คุณอาจจะต้องเช็กว่า $item->unit_price และ $item->line_total มีจริงใน $fillable ของ OrderDetail หรือไม่) --}}
+                                                <p class="text-sm text-gray-600">Qty: {{ $item->order_qty }} x ฿{{ number_format($item->unit_price ?? $item->price, 2) }}</p>
                                             </div>
                                         </div>
-                                        <p class="font-medium">฿{{ number_format($item->line_total, 2) }}</p>
+                                        <p class="font-medium">฿{{ number_format($item->line_total ?? ($item->order_qty * $item->price), 2) }}</p>
                                     </div>
                                 @endforeach
                             </div>
 
+                            {{-- แสดงที่อยู่แบบใหม่ --}}
                             <div class="border-t pt-3 text-sm text-gray-600">
-                                <p><strong>Ship to:</strong> {{ $order->shipping_address }}</p>
+                                <p><strong>Ship to:</strong> 
+                                    {{ $order->shipping_street_address }}, 
+                                    ต.{{ $order->shipping_subdistrict }}, 
+                                    อ.{{ $order->shipping_district }}, 
+                                    จ.{{ $order->shipping_province }} 
+                                    {{ $order->shipping_postcode }}
+                                </p>
                                 <p><strong>Phone:</strong> {{ $order->shipping_phone }}</p>
                             </div>
                             
-                            <div class="text-right font-bold text-xl mt-4">
-                                Total: ฿{{ number_format($order->total_amount, 2) }}
+                            {{-- เพิ่มปุ่ม Cancel และจัดเรียงใหม่ --}}
+                            <div class="flex justify-between items-center mt-4">
+                                {{-- 1. ปุ่ม Cancel (จะแสดงเฉพาะถ้า status == 'pending') --}}
+                                <div>
+                                    @if ($order->status == 'pending')
+                                        <form action="{{ route('orders.cancel', $order) }}" method="POST" 
+                                              onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกออเดอร์นี้?');">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" 
+                                                    class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700">
+                                                Cancel Order
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+
+                                {{-- 2. ยอดรวม --}}
+                                <div class="text-right font-bold text-xl">
+                                    Total: ฿{{ number_format($order->total_amount, 2) }}
+                                </div>
                             </div>
+
                         </div>
                     @empty
                         <p class="text-center text-gray-500">You have no orders yet.</p>
@@ -63,3 +91,4 @@
         </div>
     </div>
 </x-app-layout>
+

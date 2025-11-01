@@ -33,8 +33,15 @@ class CheckoutController extends Controller
     {
         // 1. ตรวจสอบข้อมูลฟอร์ม
         $validated = $request->validate([
-            'shipping_address' => 'required|string|max:1000',
-            'shipping_phone' => 'required|string|max:20',
+            // 'shipping_address' => 'required|string',
+            
+            // (field ใหม่ๆ)
+            'shipping_street_address' => 'required|string|max:255',
+            'shipping_subdistrict' => 'required|string|max:255',
+            'shipping_district' => 'required|string|max:255',
+            'shipping_province' => 'required|string|max:255',
+            'shipping_postcode' => 'required|string|max:5',
+            'shipping_phone' => 'required|string|max:10',
             'payment_method' => 'required|string|in:cash_on_delivery', // ต้องเป็น 'cash_on_delivery' เท่านั้น
         ]);
 
@@ -58,6 +65,19 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
+            // 2. [สำคัญ] รวมที่อยู่ใหม่ให้เป็น string
+            $full_address = $validated['shipping_street_address'] . ', ' .
+                            'ต.' . $validated['shipping_subdistrict'] . ', ' .
+                            'อ.' . $validated['shipping_district'] . ', ' .
+                            'จ.' . $validated['shipping_province'] . ' ' .
+                            $validated['shipping_postcode'];
+        } catch (\Exception $e) {
+            // ถ้ามีอะไรพลาด
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to place order. Please try again. Error: ' . $e->getMessage());
+        }
+
+        try {
             // 6. สร้าง Order (ใบสั่งซื้อหลัก)
             $order = Order::create([
                 'user_id' => $user->id,
@@ -65,7 +85,12 @@ class CheckoutController extends Controller
                 'status' => 'pending', // สถานะ: รอดำเนินการ
                 'payment_method' => $validated['payment_method'],
                 'payment_status' => 'pending', // สถานะชำระเงิน: รอดำเนินการ
-                'shipping_address' => $validated['shipping_address'],
+                'shipping_address' => $full_address,
+                'shipping_street_address' => $validated['shipping_street_address'],
+                'shipping_subdistrict' => $validated['shipping_subdistrict'],
+                'shipping_district' => $validated['shipping_district'],
+                'shipping_province' => $validated['shipping_province'],
+                'shipping_postcode' => $validated['shipping_postcode'],
                 'shipping_phone' => $validated['shipping_phone'],
             ]);
 

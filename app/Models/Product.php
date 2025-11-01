@@ -23,4 +23,9 @@ class Product extends Model
         // สินค้า 1 ชิ้น จะอยู่ใน 1 หมวดหมู่
         return $this->belongsTo(ProductCategory::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

@@ -16,6 +16,11 @@ class Order extends Model
         'shipping_address',
         'shipping_phone',
         // (field อื่นๆ ของคุณที่เคยเพิ่มไว้)
+        'shipping_street_address',
+        'shipping_subdistrict',
+        'shipping_district',
+        'shipping_province',
+        'shipping_postcode',
     ];
 
     /**

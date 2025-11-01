@@ -4,7 +4,11 @@
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <!-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" /> -->
+                        <!-- <img class="w-10 h-5 rounded-full mx-auto mb-4 bg-gray-200" 
+                         src="{{ asset('storage/profile/logo.jpg') }}" 
+                         alt="logo"> -->
+                         <a class="text-4xl font-extrabold text-orange-600 drop-shadow-lg hover:text-orange-500 transition duration-300 ease-in-out dark:text-orange-400 dark:hover:text-orange-300">Yummista</a>
                     </a>
                 </div>
 
@@ -13,6 +17,7 @@
                         {{ __('Menu') }}
                     </x-nav-link>
 
+                    {{-- Admin Links --}}
                     @auth
                         @if (Auth::user()->is_admin)
                             <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
@@ -23,6 +28,9 @@
                             </x-nav-link>
                             <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.index')">
                                 {{ __('Orders') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                                {{ __('Members') }}
                             </x-nav-link>
                         @endif
                     @endauth
@@ -50,9 +58,14 @@
                                 {{ __('Profile') }}
                             </x-dropdown-link>
                             
-                            <x-dropdown-link :href="route('orders.my')">
-                                {{ __('My Orders') }}
-                            </x-dropdown-link>
+                            {{-- แก้ไขจุดที่ 1 ซ่อน My Orders จาก Admin --}}
+                            @if (! (auth()->user()?->is_admin ?? false))
+                                <x-dropdown-link :href="route('orders.my')">
+                                    {{ __('My Orders') }}
+                                </x-dropdown-link>
+                            @endif
+                            {{-- จบการแก้ไขจุดที่ 1 --}}
+
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -70,20 +83,32 @@
                         <a href="{{ route('register') }}" class="ms-4 font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">Register</a>
                     @endif
                 @endauth
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <a href="{{ route('cart.index') }}" class="relative inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <span class="sr-only">Cart</span>
 
-                        @if (session('cart') && count(session('cart')) > 0)
-                            <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -right-2">
-                                {{ count(session('cart')) }}
-                            </div>
-                        @endif
-                    </a>
-                </div>
+                @if (auth()->user()?->is_admin ?? false)
+                    <div class="font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800">
+                        Admin
+                    </div>
+                @endif
+                
+                {{-- แก้ไขจุดที่ 2 ซ่อน Cart Icon จากหน้า Admin --}}
+                @if (! (auth()->user()?->is_admin ?? false))
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <a href="{{ route('cart.index') }}" class="relative inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span class="sr-only">Cart</span>
+
+                            @if (session('cart') && count(session('cart')) > 0)
+                                <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -right-2">
+                                    {{ count(session('cart')) }}
+                                </div>
+                            @endif
+                        </a>
+                    </div>
+                @endif
+                {{-- จบการแก้ไขจุดที่ 2 --}}
+                
             </div>
 
             <div class="-me-2 flex items-center sm:hidden">
@@ -111,6 +136,9 @@
                     <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                         {{ __('Products') }}
                     </x-responsive-nav-link>
+                    
+                    {{-- (เพิ่ม 'Orders' ตรงนี้ด้วยสำหรับ Admin) --}}
+                    
                 @endif
             @endauth
         </div>
@@ -126,6 +154,8 @@
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>
+                    
+                    {{-- (เพิ่ม @if !Auth::user()->is_admin รอบ 'My Orders' ตรงนี้ได้ถ้ามี) --}}
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -151,5 +181,8 @@
                 </div>
             </div>
         @endauth
+        
+        {{-- (เมนูตะกร้าสำหรับมือถือ ถ้ามี ก็ต้องครอบ @if !Request::is('admin/*') ไว้ตรงนี้ด้วย) --}}
+        
     </div>
 </nav>
